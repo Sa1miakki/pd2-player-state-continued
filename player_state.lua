@@ -1,3 +1,4 @@
+--my code is bad
 session = managers.network:session()
 nr_player = nr_player or session:amount_of_players()
 
