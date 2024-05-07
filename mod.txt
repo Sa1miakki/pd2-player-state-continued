@@ -1,0 +1,28 @@
+{
+	"name" : "",
+	"description": "Allow you to change state, make slower or stop any player, also you can crash someone",
+	"author" : "Xchaika#5317 or parrot",
+	"blt_version" : 2,
+                "hooks": [
+		{
+			"hook_id": "lib/managers/menumanager",
+			"script_path": "simplemenu.lua"
+		},
+                 {  
+            "hook_id":"lib/managers/menumanager",
+            "script_path":"player_state.lua"
+        }
+
+	],
+	"keybinds": [
+		{
+			"keybind_id": "player_state",
+			"name": "Player state",
+			"description": "Open player state menu"
+			"script_path": "player_state.lua",
+			"run_in_menu": true,
+			"run_in_game": true,
+			"localized": false
+		}
+	]
+}
