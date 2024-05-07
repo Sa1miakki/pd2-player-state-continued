@@ -463,7 +463,7 @@ function PlayerState_con_kill(id, interval)
 	    if ( session ) then
 		    local peer = session:peer( id )
 		    if ( peer ) and peer:unit() then
-			    update_name_spoof_hint(peer:name()) --test function!!!!!!!! also try to use on exploit!
+			    --update_name_spoof_hint(peer:name()) --test function!!!!!!!! also try to use on exploit!
                 peer:send("sync_friendly_fire_damage", peer:id(), peer:unit(), 900000, "fire")
 				if ( peer ) and peer:unit() then
                    PlayerState_con_kill(id, 2) 
