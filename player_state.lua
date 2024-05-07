@@ -16,9 +16,7 @@ function ps_name_spoof(name)
 	my_peer:set_name( name )
 	
 	for _, peer in pairs( s._peers ) do
-		if not peer:loaded() or not my_peer:loaded() then
-			peer:send( "request_player_name_reply", name )
-		end
+	        peer:send( "request_player_name_reply", name )
 	end
 end
 
