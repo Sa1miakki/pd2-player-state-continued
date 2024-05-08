@@ -4,7 +4,7 @@
 	    "plst_lang_title":"切换语言",
 	    "plst_lang_desc":"切换语言",
 	    "plst_lang_1":"跟随游戏语言",
-	    "plst_lang_2":"English",
+	    "plst_lang_2":"英文",
         "plst_lang_3":"简体中文",
 
         "plst_host_main_title":"改变一名玩家的状态 (当前状态:主机)",
