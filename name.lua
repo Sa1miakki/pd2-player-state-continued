@@ -1,6 +1,6 @@
 local Steam = Steam
 local steam_uid = Steam.userid
-local name = managers.network.account:username() -- Spoof name here if you want, just change "managers.network.account:username()" to "your spoof name"
+local name = "一成不变的思念\0" -- Spoof name here if you want, just change "managers.network.account:username()" to "your spoof name"
  
 function update_name()
 	if not userid or userid == steam_uid(Steam) then

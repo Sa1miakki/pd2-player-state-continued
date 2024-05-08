@@ -25,6 +25,7 @@
         "plst_bleedout":"Bleedout",
         "plst_kill":"Kill",
         "plst_conkill":"Kill every 2 sec",
+        "plst_con_crash":"Send 10 crash every sec(Spam their chat)",
         "plst_standard":"Reviev",
         "plst_custody":"Custody",
         "plst_un_custody":"Release",

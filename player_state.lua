@@ -404,22 +404,23 @@ local bleedout = function(name)
 end
 
 local kill = function(name)
-    function Remove_Peer(id)
-	    ps_name_spoof(name)
+    function Use_Peer(id)
 	    local session = managers.network._session
 	    if ( session ) then
 		    local peer = session:peer( id )
 		    if ( peer ) then
+			    --ps_name_spoof(name)
 			    if not peer:unit() then
                    return
                 end
 				ps_name_spoof(name)
-                peer:send("sync_friendly_fire_damage", peer:id(), peer:unit(), 900000, "fire")
+				peer:send("sync_friendly_fire_damage", peer:id(), peer:unit(), 900000, "fire") 
+				
 		    end
 	    end
     end
 
-    function Remove_Peers(id)
+    function Use_Peers(id)
 	    ps_name_spoof(name)
 	    for peer_id, peer in pairs(managers.network._session._peers) do
 			if not peer:unit() then
@@ -433,12 +434,12 @@ local kill = function(name)
 	    local menu_options = {}
 	    for _, peer in pairs(managers.network:session():peers()) do
 		    if peer:rank() and peer:level() then
-			    menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Remove_Peer}
+			    menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Use_Peer}
 		    else
-			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Remove_Peer}
+			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 		    end
 	    end
-	    menu_options[#menu_options+1] = {text = ml:text('plst_kill_all'), callback = Remove_Peers}
+	    menu_options[#menu_options+1] = {text = ml:text('plst_kill_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
 	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof')  .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_kill'), menu_options)
@@ -459,11 +460,12 @@ local conkill = function(name)
                         PlayerState_con_kill(id, 2) 
 		            end
 		        end
+				PlayerState_con_kill(id, 2) --uncustody & rejoin detect
 	        end		
 	    end)
     end
 
-    function Remove_Peer(id)
+    function Use_Peer(id)
 	    local session = managers.network._session
 	    if ( session ) then
 		    local peer = session:peer( id )
@@ -481,9 +483,9 @@ local conkill = function(name)
 	    local menu_options = {}
 	    for _, peer in pairs(managers.network:session():peers()) do
 		    if peer:rank() and peer:level() then
-			    menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Remove_Peer}
+			    menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Use_Peer}
 		    else
-			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Remove_Peer}
+			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 		    end
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
@@ -618,20 +620,80 @@ local crash = function(name)
 			end
 	    end
     end
-if managers.network._session then
-	local menu_options = {}
-	for _, peer in pairs(managers.network:session():peers()) do
-		if peer:rank() and peer:level() then
-			menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Remove_Peer}
-		else
-			menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Remove_Peer}
-		end
-	end
-	menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-	menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_crash'), menu_options)
-	menu:Show()
+    if managers.network._session then
+	    local menu_options = {}
+	    for _, peer in pairs(managers.network:session():peers()) do
+		    if peer:rank() and peer:level() then
+			    menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Remove_Peer}
+		    else
+			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Remove_Peer}
+		    end
+	    end
+	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
+	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_crash'), menu_options)
+	    menu:Show()
+    end
 end
+
+local concrash = function(name)
+	function plst_con_crash(id, interval)
+        DelayedCalls:Add("plst_con_crash", interval, function()
+		    local session = managers.network._session
+	        if ( session ) then
+		        local peer = session:peer( id )
+				ps_name_spoof(name)
+		        if ( peer ) then
+			        if not peer:unit() then
+			            peer:send("sync_carry", painting, 1, true, false, 1)
+			            peer:send("sync_teammate_progress", 1, false, free, 0, false)
+			            peer:send("sync_deployable_equipment", ecm_jammer, 1)
+				    else
+				        peer:send("suppression", peer:unit(), 100)
+		                peer:send("set_pose", peer:unit(), 1)
+			            peer:send("action_change_speed", peer:unit(), 0.05)
+			            peer:send("action_change_pose", peer:unit(), 1, peer:unit():position())
+                        peer:send("action_jump_middle", peer:unit(), peer:unit():position())
+			            peer:send("action_land", peer:unit(), peer:unit():position())
+			            peer:send("sync_carry", painting, 1, true, false, 1)
+			            peer:send("sync_deployable_equipment", ecm_jammer, 1)
+			            peer:send("sync_teammate_progress", 1, false, free, 0, false)
+			            peer:send("sync_fall_position", peer:unit(), peer:unit():position(), peer:unit():rotation())
+			            --peer:send("set_stance", peer:unit(), 1, false, false)
+				    end 
+					plst_con_crash(id, 0.1)
+			    end
+				plst_con_crash(id, 0.1) --rejoin detect
+	        end		
+	    end)
+    end
+	function Use_Peer(id)
+	    local session = managers.network._session
+	    if ( session ) then
+	        local peer = session:peer( id )
+	        if ( peer ) then
+		        if not peer:unit() then
+			        plst_con_crash(id, 0.1)
+			    else
+			        plst_con_crash(id, 0.1)
+			    end
+		    end 
+	    end
+    end
+    if managers.network._session then
+	    local menu_options = {}
+	    for _, peer in pairs(managers.network:session():peers()) do
+		    if peer:rank() and peer:level() then
+			    menu_options[#menu_options+1] ={text = "(" .. peer:rank() .. "-" .. peer:level() .. ") " .. peer:name(), data = peer:id(), callback = Use_Peer}
+		    else
+			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
+		    end
+	    end
+	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
+	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_con_crash'), menu_options)
+	    menu:Show()
+    end
 end
 
 ps_menu_main_host = function()
@@ -649,16 +711,17 @@ ps_menu_main_host = function()
 			{ text = ml:text('plst_tase'), callback_func = function() name_spoof_host(tased) end },
 			{ text = ml:text('plst_incapacitated'), callback_func = function() name_spoof_host(downed) end },
 			{ text = ml:text('plst_bleedout'), callback_func = function() name_spoof_host(bleedout) end },
-			{ text = ml:text('plst_kill'), callback_func = function() name_spoof_host(kill) end },
-			{ text = ml:text('plst_conkill'), callback_func = function() name_spoof_host(conkill) end },
+			{ text = ml:text('plst_kill'), callback_func = function() kill(managers.network:session():local_peer():name()) end },
+			{ text = ml:text('plst_conkill'), callback_func = function() conkill(managers.network:session():local_peer():name()) end },
 			{ text = ml:text('plst_standard'), callback_func = function() name_spoof_host(reviev) end },
-			{ text = ml:text('plst_custody'), callback_func = function() name_spoof_host(custody) end },
-			{ text = ml:text('plst_un_custody'), callback_func = function() name_spoof_host(un_custody) end },
+			{ text = ml:text('plst_custody'), callback_func = function() custody(managers.network:session():local_peer():name()) end },
+			{ text = ml:text('plst_un_custody'), callback_func = function() un_custody(managers.network:session():local_peer():name()) end },
 			{ text = ml:text('plst_un_custody_all'), callback_func = function() un_custody_all() end },
 			{ text = ml:text('plst_custody_self'), callback_func = function() custody_me() end },
 			{ text = ml:text('plst_tele_to'), callback_func = function() teleporting() end },
 			{ text = ml:text('plst_tele_to_me'), callback_func = function() tele() end },
-			{ text = ml:text('plst_crash'), callback_func = function() name_spoof_host(crash) end }
+			{ text = ml:text('plst_crash'), callback_func = function() name_spoof_host(crash) end },
+			{ text = ml:text('plst_con_crash'), callback_func = function() name_spoof_host(concrash) end }
 		}
 	}
  
@@ -688,12 +751,13 @@ ps_menu_main_client = function()
 		["input"] = {
 			{ text = ml:text('plst_slow_mo'), callback_func = function() name_spoof_client(slow_mo) end },
 			{ text = ml:text('plst_stop'), callback_func = function() name_spoof_client(stop) end },
-			{ text = ml:text('plst_kill'), callback_func = function() name_spoof_client(kill) end },
-			{ text = ml:text('plst_conkill'), callback_func = function() name_spoof_client(conkill) end },
+			{ text = ml:text('plst_kill'), callback_func = function() kill(managers.network:session():local_peer():name()) end },
+			{ text = ml:text('plst_conkill'), callback_func = function() conkill(managers.network:session():local_peer():name()) end },
 			{ text = ml:text('plst_un_custody_me'), callback_func = function() un_custody_all() end },
 			{ text = ml:text('plst_custody_self'), callback_func = function() custody_me() end },
 			{ text = ml:text('plst_tele_to'), callback_func = function() teleporting() end },
-			{ text = ml:text('plst_crash'), callback_func = function() name_spoof_client(crash) end }
+			{ text = ml:text('plst_crash'), callback_func = function() name_spoof_client(crash) end },
+			{ text = ml:text('plst_con_crash'), callback_func = function() name_spoof_client(concrash) end }
 		}
 	}
  

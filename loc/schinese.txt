@@ -32,6 +32,7 @@
         "plst_tele_to":"让我传送到一名玩家附近",
         "plst_tele_to_me":"让一名玩家传送到我附近",
         "plst_crash":"闪退",
+        "plst_con_crash":"每秒10条闪退(刷屏)",
         "plst_un_custody_me":"让我出局",
 		
 		"plst_tele_to_me_state":"让一名玩家传送",
