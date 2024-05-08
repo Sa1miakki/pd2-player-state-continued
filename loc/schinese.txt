@@ -42,6 +42,7 @@
         "plst_slow_mo_all_restore":"解除全体慢动作",
         "plst_send_to_who":"发送给谁",
         "plst_your_spoof_name":"以 ",
+        "plst_cant_spoof":"暂不支持你以虚假",
         "plst_your_spoof_name_2":" 的身份发送 ",
         "plst_stop_all":"全体罚站",
         "plst_stop_all_restore":"解除全体罚站",
