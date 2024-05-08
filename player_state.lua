@@ -405,14 +405,15 @@ end
 
 local kill = function(name)
     function Remove_Peer(id)
+	    ps_name_spoof(name)
 	    local session = managers.network._session
-		ps_name_spoof(name)
 	    if ( session ) then
 		    local peer = session:peer( id )
 		    if ( peer ) then
 			    if not peer:unit() then
                    return
                 end
+				ps_name_spoof(name)
                 peer:send("sync_friendly_fire_damage", peer:id(), peer:unit(), 900000, "fire")
 		    end
 	    end
@@ -440,12 +441,12 @@ local kill = function(name)
 	    menu_options[#menu_options+1] = {text = ml:text('plst_kill_all'), callback = Remove_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_kill'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof')  .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_kill'), menu_options)
 	    menu:Show()
     end
 end
 
-local conkill = function(name) --need test
+local conkill = function(name) 
     function PlayerState_con_kill(id, interval)
         DelayedCalls:Add("PlayerState_con_kill", interval, function()
 		    local session = managers.network._session
@@ -487,7 +488,7 @@ local conkill = function(name) --need test
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof') .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
 	    menu:Show()
     end
 end
@@ -786,3 +787,4 @@ if Network:is_server() then
 else
     ps_menu_main_client()
 end
+

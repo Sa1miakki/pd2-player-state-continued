@@ -43,6 +43,7 @@
         "plst_slow_mo_all_restore":"Restore all",
         "plst_send_to_who":"Choose player",
         "plst_your_spoof_name":"Your name: ",
+        "plst_cant_spoof":"Name spoof NOT available :(",
         "plst_your_spoof_name_2":" State choosed: ",
         "plst_stop_all":"Stop all",
         "plst_stop_all_restore":"Restore all",

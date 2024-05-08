@@ -21,6 +21,11 @@
             
 
 	],
+         "persist_scripts" :
+	[
+		{"global" : "SpoofName", "script_path" : "name.lua"}
+        ],
+
 	"keybinds": [
 		{
 			"keybind_id": "player_state",
