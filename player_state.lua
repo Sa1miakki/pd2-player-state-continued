@@ -1,10 +1,66 @@
+_G.PlayerState = PlayerState or {}
+PlayerState.path = ModPath
+PlayerState.save_path = SavePath .. "plst.txt"
+PlayerState.settings = {
+	plst_lang_value = 1}
+	
+function PlayerState:Save()
+	local file = io.open(self.save_path,"w+")
+	if file then
+		file:write(json.encode(self.settings))
+		file:close()
+	end
+end
+
+function PlayerState:Load()
+	local file = io.open(self.save_path, "r")
+	if (file) then
+		for k, v in pairs(json.decode(file:read("*all"))) do
+			self.settings[k] = v
+		end
+	else
+		self:Save()
+	end
+end
+
+Hooks:Add("MenuManagerInitialize", "PlayerState_MenuManagerInitialize", function(menu_manager)
+	MenuCallbackHandler.plst_lang_callback = function(self,item)
+		local value = tonumber(item:value())
+		PlayerState.settings.plst_lang_value = value
+		PlayerState:Save()
+	end
+	
+	MenuCallbackHandler.plst_closed = function(self)
+		PlayerState:Save()
+	end
+	
+	PlayerState:Load()
+	MenuHelper:LoadFromJsonFile(PlayerState.path .. "menu/options.txt", PlayerState, PlayerState.settings)
+end)
+
+Hooks:Add("LocalizationManagerPostInit", "PlayerState_LocalizationManagerPostInit", function(loc)
+	PlayerState:Load()
+	local t = PlayerState.path .. "loc/"
+	if PlayerState.settings.plst_lang_value == 1 then
+	    for _, filename in pairs(file.GetFiles(t)) do
+		    local str = filename:match('^(.*).txt$')
+		    if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
+			    loc:load_localization_file(t .. filename)
+			    return
+		    end
+	    end
+	    loc:load_localization_file(t .. "english.txt")
+	elseif PlayerState.settings.plst_lang_value == 2 then
+		loc:load_localization_file(t .. "english.txt")
+	elseif PlayerState.settings.plst_lang_value == 3 then
+	    loc:load_localization_file(t .. "schinese.txt")
+	end
+end)
+
+local ml = managers.localization
+
 session = managers.network:session()
 nr_player = nr_player or session:amount_of_players()
-
-if not SimpleMenu then
-	managers.chat:_receive_message(1, "SimpleMenu", "not created", Color.red)
-	return
-end
 
 function ps_name_spoof(name)
 	local s = managers.network:session()
@@ -16,7 +72,7 @@ function ps_name_spoof(name)
 	my_peer:set_name( name )
 	
 	for _, peer in pairs( s._peers ) do
-	        peer:send( "request_player_name_reply", name )
+		peer:send( "request_player_name_reply", name )
 	end
 end
 
@@ -44,8 +100,8 @@ tele = tele or function(info)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("传送", "选择让谁传送", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_tele_to_me_state'), ml:text('plst_tele_to_me_desc'), menu_options)
 		menu:Show()
 	end
 end
@@ -101,8 +157,8 @@ teleporting = teleporting or function(info)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("传送", "传送到谁附近", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_tele_to_state'), ml:text('plst_tele_to_desc'), menu_options)
 		menu:Show()
 	end
 end
@@ -137,11 +193,11 @@ local slow_mo = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体慢动作", callback = Use_Peers}
-		menu_options[#menu_options+1] = {text = "解除全体慢动作", callback = Use_Peers_2}
+		menu_options[#menu_options+1] = {text = ml:text('plst_slow_mo_all'), callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_slow_mo_all_restore'), callback = Use_Peers_2}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁被慢动作", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_slow_mo'), menu_options)
 		menu:Show()
 	end
 end
@@ -175,11 +231,11 @@ local stop = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体罚站", callback = Use_Peers}
-		menu_options[#menu_options+1] = {text = "解除全体罚站", callback = Use_Peers_2}
+		menu_options[#menu_options+1] = {text = ml:text('plst_stop_all'), callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_stop_all_restore'), callback = Use_Peers_2}
 		menu_options[#menu_options+1] = {text = " ", callback = Use_Peers_2}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁被罚站", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_stop'), menu_options)
 		menu:Show()
 	end
 end
@@ -217,10 +273,10 @@ local arrested = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体被拷", callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_cuff_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁被拷住", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_cuff'), menu_options)
 		menu:Show()
 	end
 end
@@ -258,10 +314,10 @@ local tased = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体被电", callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_tase_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁被电击", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_tase'), menu_options)
 		menu:Show()
 	end
 end
@@ -299,10 +355,10 @@ local downed = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体被踹", callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_incapacitated_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁被踹倒", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_incapacitated'), menu_options)
 		menu:Show()
 	end
 end
@@ -339,25 +395,22 @@ local bleedout = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体倒下", callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_bleedout_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁倒下", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_bleedout'), menu_options)
 		menu:Show()
 	end
 end
 
 local kill = function(name)
-    function errmsg(msg) managers.chat:_receive_message(1, "No unit", msg, Color(0.8,0,0), false) end	
-    
-	function Remove_Peer(id)
+    function Remove_Peer(id)
 	    local session = managers.network._session
 		ps_name_spoof(name)
 	    if ( session ) then
 		    local peer = session:peer( id )
 		    if ( peer ) then
 			    if not peer:unit() then
-                   errmsg("你必须与" .. peer:name() .. "建立连接,同时" .. peer:name() .."不可以在大厅/准备界面/监狱里.")
                    return
                 end
                 peer:send("sync_friendly_fire_damage", peer:id(), peer:unit(), 900000, "fire")
@@ -369,7 +422,6 @@ local kill = function(name)
 	    ps_name_spoof(name)
 	    for peer_id, peer in pairs(managers.network._session._peers) do
 			if not peer:unit() then
-                errmsg("你必须与" .. peer:name() .. "建立连接,同时" .. peer:name() .."不可以在大厅/准备界面/监狱里.")
                 return
             end
             peer:send("sync_friendly_fire_damage", peer:id(), peer:unit(), 900000, "fire")
@@ -385,18 +437,16 @@ local kill = function(name)
 			    menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Remove_Peer}
 		    end
 	    end
-	    menu_options[#menu_options+1] = {text = "全体倒地", callback = Remove_Peers}
+	    menu_options[#menu_options+1] = {text = ml:text('plst_kill_all'), callback = Remove_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-	    menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-	    local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁受到大量伤害而倒下", menu_options)
+	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_kill'), menu_options)
 	    menu:Show()
     end
 end
 
 local conkill = function(name) --need test
-    function errmsg(msg) managers.chat:_receive_message(1, "No unit", msg, Color(0.8,0,0), false) end	
-    
-	function PlayerState_con_kill(id, interval)
+    function PlayerState_con_kill(id, interval)
         DelayedCalls:Add("PlayerState_con_kill", interval, function()
 		    local session = managers.network._session
 	        if ( session ) then
@@ -436,8 +486,8 @@ local conkill = function(name) --need test
 		    end
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-	    menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-	    local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁受到(2秒一次的)大量伤害而倒下", menu_options)
+	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
 	    menu:Show()
     end
 end
@@ -475,10 +525,10 @@ local reviev = function(name)
 				menu_options[#menu_options+1] ={text = peer:name(), data = peer:id(), callback = Use_Peer}
 			end
 		end
-		menu_options[#menu_options+1] = {text = "全体恢复正常", callback = Use_Peers}
+		menu_options[#menu_options+1] = {text = ml:text('plst_standard_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁恢复正常", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_standard'), menu_options)
 		menu:Show()
 	end
 end
@@ -506,8 +556,8 @@ local custody = function(name)
 			end
 		end
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁进局", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_custody'), menu_options)
 		menu:Show()
 	end
 end
@@ -534,8 +584,8 @@ local un_custody = function(name)
 			end
 		end
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-		menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-		local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁出局", menu_options)
+		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_un_custody'), menu_options)
 		menu:Show()
 	end
 end
@@ -577,37 +627,37 @@ if managers.network._session then
 		end
 	end
 	menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
-	menu_options[#menu_options+1] = {text = "取消", is_cancel_button = true}
-	local menu = QuickMenu:new("发送给谁", "以 ".. name .. " 的身份选择让谁闪退", menu_options)
+	menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
+	local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_crash'), menu_options)
 	menu:Show()
 end
 end
 
 ps_menu_main_host = function()
 	local dialog_data = {    
-		title = "改变一名玩家的状态 (当前状态:主机)",
-		text = "选择状态",
+		title = ml:text('plst_host_main_title'),
+		text = ml:text('plst_host_main_desc'),
 		button_list = {}
 	}
  
 	local main_menu_table = {
 		["input"] = {
-			{ text = "慢动作", callback_func = function() name_spoof_host(slow_mo) end },
-			{ text = "原地罚站", callback_func = function() name_spoof_host(stop) end },
-			{ text = "被拷", callback_func = function() name_spoof_host(arrested) end },
-			{ text = "被电", callback_func = function() name_spoof_host(tased) end },
-			{ text = "被踹", callback_func = function() name_spoof_host(downed) end },
-			{ text = "倒地", callback_func = function() name_spoof_host(bleedout) end },
-			{ text = "击杀", callback_func = function() name_spoof_host(kill) end },
-			{ text = "连续击杀", callback_func = function() name_spoof_host(conkill) end },
-			{ text = "恢复正常", callback_func = function() name_spoof_host(reviev) end },
-			{ text = "进局", callback_func = function() name_spoof_host(custody) end },
-			{ text = "出局", callback_func = function() name_spoof_host(un_custody) end },
-			{ text = "全部出局", callback_func = function() un_custody_all() end },
-			{ text = "让我进局", callback_func = function() custody_me() end },
-			{ text = "让我传送到一名玩家附近", callback_func = function() teleporting() end },
-			{ text = "让一名玩家传送到我附近", callback_func = function() tele() end },
-			{ text = "闪退", callback_func = function() name_spoof_host(crash) end }
+			{ text = ml:text('plst_slow_mo'), callback_func = function() name_spoof_host(slow_mo) end },
+			{ text = ml:text('plst_stop'), callback_func = function() name_spoof_host(stop) end },
+			{ text = ml:text('plst_cuff'), callback_func = function() name_spoof_host(arrested) end },
+			{ text = ml:text('plst_tase'), callback_func = function() name_spoof_host(tased) end },
+			{ text = ml:text('plst_incapacitated'), callback_func = function() name_spoof_host(downed) end },
+			{ text = ml:text('plst_bleedout'), callback_func = function() name_spoof_host(bleedout) end },
+			{ text = ml:text('plst_kill'), callback_func = function() name_spoof_host(kill) end },
+			{ text = ml:text('plst_conkill'), callback_func = function() name_spoof_host(conkill) end },
+			{ text = ml:text('plst_standard'), callback_func = function() name_spoof_host(reviev) end },
+			{ text = ml:text('plst_custody'), callback_func = function() name_spoof_host(custody) end },
+			{ text = ml:text('plst_un_custody'), callback_func = function() name_spoof_host(un_custody) end },
+			{ text = ml:text('plst_un_custody_all'), callback_func = function() un_custody_all() end },
+			{ text = ml:text('plst_custody_self'), callback_func = function() custody_me() end },
+			{ text = ml:text('plst_tele_to'), callback_func = function() teleporting() end },
+			{ text = ml:text('plst_tele_to_me'), callback_func = function() tele() end },
+			{ text = ml:text('plst_crash'), callback_func = function() name_spoof_host(crash) end }
 		}
 	}
  
@@ -628,21 +678,21 @@ end
 
 ps_menu_main_client = function()
 	local dialog_data = {    
-		title = "改变一名玩家的状态 (当前状态:客机)",
-		text = "选择状态",
+		title = ml:text('plst_client_main_desc'),
+		text = ml:text('plst_host_main_desc'),
 		button_list = {}
 	}
  
 	local main_menu_table = {
 		["input"] = {
-			{ text = "慢动作", callback_func = function() name_spoof_client(slow_mo) end },
-			{ text = "原地罚站", callback_func = function() name_spoof_client(stop) end },
-			{ text = "击杀", callback_func = function() name_spoof_client(kill) end },
-			{ text = "连续击杀", callback_func = function() name_spoof_client(conkill) end },
-			{ text = "让我出局", callback_func = function() un_custody_all() end },
-			{ text = "让我进局", callback_func = function() custody_me() end },
-			{ text = "让我传送到一名玩家附近", callback_func = function() teleporting() end },
-			{ text = "闪退", callback_func = function() name_spoof_client(crash) end }
+			{ text = ml:text('plst_slow_mo'), callback_func = function() name_spoof_client(slow_mo) end },
+			{ text = ml:text('plst_stop'), callback_func = function() name_spoof_client(stop) end },
+			{ text = ml:text('plst_kill'), callback_func = function() name_spoof_client(kill) end },
+			{ text = ml:text('plst_conkill'), callback_func = function() name_spoof_client(conkill) end },
+			{ text = ml:text('plst_un_custody_me'), callback_func = function() un_custody_all() end },
+			{ text = ml:text('plst_custody_self'), callback_func = function() custody_me() end },
+			{ text = ml:text('plst_tele_to'), callback_func = function() teleporting() end },
+			{ text = ml:text('plst_crash'), callback_func = function() name_spoof_client(crash) end }
 		}
 	}
  
@@ -663,16 +713,21 @@ end
 
 name_spoof_host = function(state)
 	local dialog_data = {    
-		title = "以谁的身份发送",
-		text = "选择你发送时显示的ID",
+		title = ml:text('plst_spoof_title'),
+		text = ml:text('plst_spoof_desc'),
 		button_list = {}
 	}
 	local count_data = #dialog_data.button_list
 	local lpeer_id = managers.network._session._local_peer._id
 	table.insert(dialog_data.button_list, {
-			text = "匿名发送",
+			text = ml:text('plst_spoof_anonymous'),
 			callback_func = function() state("") end,     
 		})
+	table.insert(dialog_data.button_list, {
+			text = ml:text('plst_spoof_not_anonymous'),
+			callback_func = function() state(managers.network:session():local_peer():name()) end,     
+		})
+	table.insert(dialog_data.button_list, {})
 	for _, peer in pairs( managers.network._session._peers ) do
 		local peer_id = peer._id
 		if peer_id ~= lpeer_id then
@@ -685,7 +740,7 @@ name_spoof_host = function(state)
 	end
 	
 	table.insert(dialog_data.button_list, {})
-	table.insert(dialog_data.button_list, {text = "返回", callback_func = function() ps_menu_main_host() end,})
+	table.insert(dialog_data.button_list, {text = ml:text('plst_return'), callback_func = function() ps_menu_main_host() end,})
 	local no_button = {text = managers.localization:text("dialog_cancel"), cancel_button = true}      
 	table.insert(dialog_data.button_list, no_button) 
 	managers.system_menu:show_buttons(dialog_data)
@@ -693,16 +748,21 @@ end
 
 name_spoof_client = function(state)
 	local dialog_data = {    
-		title = "以谁的身份发送",
-		text = "选择你发送时显示的ID",
+		title = ml:text('plst_spoof_title'),
+		text = ml:text('plst_spoof_desc'),
 		button_list = {}
 	}
 	local count_data = #dialog_data.button_list
 	local lpeer_id = managers.network._session._local_peer._id
 	table.insert(dialog_data.button_list, {
-			text = "匿名发送",
+			text = ml:text('plst_spoof_anonymous'),
 			callback_func = function() state("") end,     
 		})
+	table.insert(dialog_data.button_list, {
+			text = ml:text('plst_spoof_not_anonymous'),
+			callback_func = function() state(managers.network:session():local_peer():name()) end,     
+		})
+	table.insert(dialog_data.button_list, {})
 	for _, peer in pairs( managers.network._session._peers ) do
 		local peer_id = peer._id
 		if peer_id ~= lpeer_id then
@@ -715,7 +775,7 @@ name_spoof_client = function(state)
 	end
 	
 	table.insert(dialog_data.button_list, {})
-	table.insert(dialog_data.button_list, {text = "返回", callback_func = function() ps_menu_main_client() end,})
+	table.insert(dialog_data.button_list, {text = ml:text('plst_return'), callback_func = function() ps_menu_main_client() end,})
 	local no_button = {text = managers.localization:text("dialog_cancel"), cancel_button = true}      
 	table.insert(dialog_data.button_list, no_button) 
 	managers.system_menu:show_buttons(dialog_data)

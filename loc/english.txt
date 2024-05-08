@@ -1,0 +1,59 @@
+{
+	    "plst_title" : "Player State",
+	    "plst_desc":"Switch Language",
+	    "plst_lang_title":"Switch Language",
+	    "plst_lang_desc":"Switch Language",
+	    "plst_lang_1":"Game Language or eng",
+	    "plst_lang_2":"English",
+        "plst_lang_3":"简体中文",
+
+        "plst_host_main_title":"Player State (Your state:Host)",
+        "plst_host_main_desc":"Choose state",
+        "plst_client_main_desc":"Player State (Your state:Client)",
+        "plst_spoof_title":"Name Spoof",
+        "plst_spoof_desc":"Select your spoof name when send",
+		"plst_spoof_anonymous":"*Anonymous*",
+        "plst_spoof_not_anonymous":"*Use my name*",
+        "plst_return":"Return",
+
+
+        "plst_slow_mo":"Slow-mo",
+        "plst_stop":"Stop",
+        "plst_cuff":"Cuff",
+        "plst_tase":"Taze",
+        "plst_incapacitated":"Downed",
+        "plst_bleedout":"Bleedout",
+        "plst_kill":"Kill",
+        "plst_conkill":"Kill every 2 sec",
+        "plst_standard":"Reviev",
+        "plst_custody":"Custody",
+        "plst_un_custody":"Release",
+        "plst_un_custody_all":"Release all from custody",
+        "plst_custody_self":"Enter in custody",
+        "plst_tele_to":"Teleport to a peer",
+        "plst_tele_to_me":"Teleport to me",
+        "plst_crash":"Crash",
+        "plst_un_custody_me":"Release myself",
+		
+		"plst_tele_to_me_state":"Let a player teleport to me",
+        "plst_tele_to_me_desc":"Choose player",
+        "plst_tele_to_state":"Let me teleport to a player",
+        "plst_tele_to_desc":"Choose player",
+        "plst_slow_mo_all":"Slow all",
+        "plst_slow_mo_all_restore":"Restore all",
+        "plst_send_to_who":"Choose player",
+        "plst_your_spoof_name":"Your name: ",
+        "plst_your_spoof_name_2":" State choosed: ",
+        "plst_stop_all":"Stop all",
+        "plst_stop_all_restore":"Restore all",
+        "plst_cuff_all":"Cuff all",
+        "plst_tase_all":"Taze all",
+        "plst_incapacitated_all":"Down all",
+        "plst_bleedout_all":"Bleedout all",
+        "plst_kill_all":"Kill all",
+        "plst_standard_all":"Reviev all"
+        
+         
+        
+
+}

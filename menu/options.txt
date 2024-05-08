@@ -1,0 +1,22 @@
+{
+	"menu_id" : "plst_menu",
+	"parent_menu_id" : "blt_options",
+	"title" : "plst_title",
+	"description":"plst_desc"
+	"back_callback" : "plst_closed",
+	"items" : [
+		{
+			"type" : "multiple_choice",
+			"id" : "plst_lang_choice",
+			"title" : "plst_lang_title",
+			"description" : "plst_lang_desc",
+			"callback" : "plst_lang_callback",
+			"items" : [
+				"plst_lang_1",
+				"plst_lang_2",
+                                "plst_lang_3"
+			],
+			"value" : "plst_lang_value"
+		}
+	]
+}
