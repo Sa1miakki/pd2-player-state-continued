@@ -762,7 +762,7 @@ name_spoof_client = function(state)
 	local lpeer_id = managers.network._session._local_peer._id
 	table.insert(dialog_data.button_list, {
 			text = ml:text('plst_spoof_anonymous').._G.PlayerState.settings.plst_anonymous,
-			callback_func = function() state("") end,     
+			callback_func = function() state(_G.PlayerState.settings.plst_anonymous) end,     
 		})
 	table.insert(dialog_data.button_list, {
 			text = ml:text('plst_spoof_not_anonymous')..managers.network:session():local_peer():name(),
