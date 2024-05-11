@@ -1,62 +1,3 @@
-_G.PlayerState = PlayerState or {}
-PlayerState.path = ModPath
-PlayerState.save_path = SavePath .. "plst.txt"
-PlayerState.settings = {
-	plst_lang_value = 1}
-	
-function PlayerState:Save()
-	local file = io.open(self.save_path,"w+")
-	if file then
-		file:write(json.encode(self.settings))
-		file:close()
-	end
-end
-
-function PlayerState:Load()
-	local file = io.open(self.save_path, "r")
-	if (file) then
-		for k, v in pairs(json.decode(file:read("*all"))) do
-			self.settings[k] = v
-		end
-	else
-		self:Save()
-	end
-end
-
-Hooks:Add("MenuManagerInitialize", "PlayerState_MenuManagerInitialize", function(menu_manager)
-	MenuCallbackHandler.plst_lang_callback = function(self,item)
-		local value = tonumber(item:value())
-		PlayerState.settings.plst_lang_value = value
-		PlayerState:Save()
-	end
-	
-	MenuCallbackHandler.plst_closed = function(self)
-		PlayerState:Save()
-	end
-	
-	PlayerState:Load()
-	MenuHelper:LoadFromJsonFile(PlayerState.path .. "menu/options.txt", PlayerState, PlayerState.settings)
-end)
-
-Hooks:Add("LocalizationManagerPostInit", "PlayerState_LocalizationManagerPostInit", function(loc)
-	PlayerState:Load()
-	local t = PlayerState.path .. "loc/"
-	if PlayerState.settings.plst_lang_value == 1 then
-	    for _, filename in pairs(file.GetFiles(t)) do
-		    local str = filename:match('^(.*).txt$')
-		    if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
-			    loc:load_localization_file(t .. filename)
-			    return
-		    end
-	    end
-	    loc:load_localization_file(t .. "english.txt")
-	elseif PlayerState.settings.plst_lang_value == 2 then
-		loc:load_localization_file(t .. "english.txt")
-	elseif PlayerState.settings.plst_lang_value == 3 then
-	    loc:load_localization_file(t .. "schinese.txt")
-	end
-end)
-
 local ml = managers.localization
 
 session = managers.network:session()
@@ -197,7 +138,7 @@ local slow_mo = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_slow_mo_all_restore'), callback = Use_Peers_2}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_slow_mo'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_slow_mo'), menu_options)
 		menu:Show()
 	end
 end
@@ -235,7 +176,7 @@ local stop = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_stop_all_restore'), callback = Use_Peers_2}
 		menu_options[#menu_options+1] = {text = " ", callback = Use_Peers_2}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_stop'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_stop'), menu_options)
 		menu:Show()
 	end
 end
@@ -276,7 +217,7 @@ local arrested = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_cuff_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_cuff'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_cuff'), menu_options)
 		menu:Show()
 	end
 end
@@ -317,7 +258,7 @@ local tased = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_tase_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_tase'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_tase'), menu_options)
 		menu:Show()
 	end
 end
@@ -358,7 +299,7 @@ local downed = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_incapacitated_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_incapacitated'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_incapacitated'), menu_options)
 		menu:Show()
 	end
 end
@@ -398,7 +339,7 @@ local bleedout = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_bleedout_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_bleedout'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_bleedout'), menu_options)
 		menu:Show()
 	end
 end
@@ -442,7 +383,7 @@ local kill = function(name)
 	    menu_options[#menu_options+1] = {text = ml:text('plst_kill_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof')  .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_kill'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof') .. "\n"  .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_kill'), menu_options)
 	    menu:Show()
     end
 end
@@ -490,7 +431,7 @@ local conkill = function(name)
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof') .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof') .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
 	    menu:Show()
     end
 end
@@ -531,7 +472,7 @@ local reviev = function(name)
 		menu_options[#menu_options+1] = {text = ml:text('plst_standard_all'), callback = Use_Peers}
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_standard'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_standard'), menu_options)
 		menu:Show()
 	end
 end
@@ -560,7 +501,7 @@ local custody = function(name)
 		end
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_custody'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_custody'), menu_options)
 		menu:Show()
 	end
 end
@@ -588,7 +529,7 @@ local un_custody = function(name)
 		end
 		menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 		menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_un_custody'), menu_options)
+		local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_un_custody'), menu_options)
 		menu:Show()
 	end
 end
@@ -631,7 +572,7 @@ local crash = function(name)
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_crash'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_crash'), menu_options)
 	    menu:Show()
     end
 end
@@ -691,7 +632,7 @@ local concrash = function(name)
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_con_crash'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_con_crash'), menu_options)
 	    menu:Show()
     end
 end
@@ -785,11 +726,11 @@ name_spoof_host = function(state)
 	local count_data = #dialog_data.button_list
 	local lpeer_id = managers.network._session._local_peer._id
 	table.insert(dialog_data.button_list, {
-			text = ml:text('plst_spoof_anonymous'),
-			callback_func = function() state("") end,     
+			text = ml:text('plst_spoof_anonymous').._G.PlayerState.settings.plst_anonymous,
+			callback_func = function() state(_G.PlayerState.settings.plst_anonymous) end,     
 		})
 	table.insert(dialog_data.button_list, {
-			text = ml:text('plst_spoof_not_anonymous'),
+			text = ml:text('plst_spoof_not_anonymous')..managers.network:session():local_peer():name(),
 			callback_func = function() state(managers.network:session():local_peer():name()) end,     
 		})
 	table.insert(dialog_data.button_list, {})
@@ -820,11 +761,11 @@ name_spoof_client = function(state)
 	local count_data = #dialog_data.button_list
 	local lpeer_id = managers.network._session._local_peer._id
 	table.insert(dialog_data.button_list, {
-			text = ml:text('plst_spoof_anonymous'),
+			text = ml:text('plst_spoof_anonymous').._G.PlayerState.settings.plst_anonymous,
 			callback_func = function() state("") end,     
 		})
 	table.insert(dialog_data.button_list, {
-			text = ml:text('plst_spoof_not_anonymous'),
+			text = ml:text('plst_spoof_not_anonymous')..managers.network:session():local_peer():name(),
 			callback_func = function() state(managers.network:session():local_peer():name()) end,     
 		})
 	table.insert(dialog_data.button_list, {})

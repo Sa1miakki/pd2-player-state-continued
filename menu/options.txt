@@ -17,6 +17,14 @@
                                 "plst_lang_3"
 			],
 			"value" : "plst_lang_value"
+		},
+         {
+            "type": "input",
+            "id": "plst_anonymous_input",
+            "title": "plst_anonymous_title",
+            "description": "plst_anonymous_desc",
+            "callback": "plst_anonymous_callback",
+            "value": "plst_anonymous"
 		}
 	]
 }

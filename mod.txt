@@ -15,7 +15,7 @@
 	],
 
                 "hooks": [
-		{"hook_id": "lib/managers/menumanager", "script_path": "simplemenu.lua"},
+		{"hook_id": "lib/managers/menumanager", "script_path": "menu/menumanager.lua"},
                 {"hook_id":"lib/managers/menumanager", "script_path":"player_state.lua" },
                 {"hook_id":"lib/managers/hudmanager", "script_path":"player_state.lua" }
             
