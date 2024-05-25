@@ -6,8 +6,8 @@
 	    "plst_lang_1":"Game Language or eng",
 	    "plst_lang_2":"English",
         "plst_lang_3":"Simplified Chinese",
-            "plst_anonymous_title":"Your custom name",
-             "plst_anonymous_desc":"Custom your name when send, everyone in the lobby wont see this name. only spoof 'anti-' mod.\n if someone you crashed have anticrash, he will receiv a msg said *this name* tried to crash him.",
+        "plst_anonymous_title":"Your custom name",
+        "plst_anonymous_desc":"Custom your name when send, everyone in the lobby wont see this name. only spoof 'anti-' mod.\n if someone you crashed have anticrash, he will receiv a msg said *this name* tried to crash him.",
 
         "plst_host_main_title":"Player State (Your state:Host)",
         "plst_host_main_desc":"Choose state",
