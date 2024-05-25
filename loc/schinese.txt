@@ -6,8 +6,8 @@
 	    "plst_lang_1":"跟随游戏语言",
 	    "plst_lang_2":"英文",
         "plst_lang_3":"简体中文",
-            "plst_anonymous_title":"自定义名称",
-             "plst_anonymous_desc":"自定义你发送时的名称,发送时其他人看不到此名称\n 例如你想炸的人装了anticrash,那么他收到的信息是*这个名字*想要炸他",
+        "plst_anonymous_title":"自定义名称",
+        "plst_anonymous_desc":"自定义你发送时的名称,发送时其他人看不到此名称\n 例如你想炸的人装了anticrash,那么他收到的信息是*这个名字*想要炸他",
 
 
         "plst_host_main_title":"改变一名玩家的状态 (当前状态:主机)",
