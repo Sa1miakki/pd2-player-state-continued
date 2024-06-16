@@ -435,7 +435,7 @@ local conkill = function(name)
 	    end
 	    menu_options[#menu_options+1] = {text = " ", is_cancel_button = true}
 	    menu_options[#menu_options+1] = {text = ml:text('dialog_cancel'), is_cancel_button = true}
-	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_cant_spoof') .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
+	    local menu = QuickMenu:new(ml:text('plst_send_to_who'), ml:text('plst_your_spoof_name').. name .. "\n" .. ml:text('plst_your_spoof_name_2') .. ml:text('plst_conkill'), menu_options)
 	    menu:Show()
     end
 end
