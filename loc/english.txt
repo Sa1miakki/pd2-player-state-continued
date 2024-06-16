@@ -8,6 +8,8 @@
         "plst_lang_3":"Simplified Chinese",
         "plst_anonymous_title":"Your custom name",
         "plst_anonymous_desc":"Custom your name when send, everyone in the lobby wont see this name. only spoof 'anti-' mod.\n if someone you crashed have anticrash, he will receiv a msg said *this name* tried to crash him.",
+        "plst_anonymous_toggle_title":"Enable name spoof",
+        "plst_anonymous_toggle_desc":"Disable it you can do some fast action",
 
         "plst_host_main_title":"Player State (Your state:Host)",
         "plst_host_main_desc":"Choose state",
@@ -26,7 +28,9 @@
         "plst_incapacitated":"Downed",
         "plst_bleedout":"Bleedout",
         "plst_kill":"Kill",
-        "plst_conkill":"Kill every 2 sec",
+        "plst_explode":"Explode",
+        "plst_conkill":"Explode every 2 sec",
+        "plst_shake":"Shake Screen",
         "plst_con_crash":"100 crash per sec(Spam their chat)",
         "plst_standard":"Reviev",
         "plst_custody":"Custody",
@@ -37,6 +41,7 @@
         "plst_tele_to_me":"Teleport to me",
         "plst_crash":"Crash",
         "plst_un_custody_me":"Release myself",
+		"plst_cheater_tag":"Mark cheater",
 		
 		"plst_tele_to_me_state":"Let a player teleport to me",
         "plst_tele_to_me_desc":"Choose player",
@@ -55,7 +60,8 @@
         "plst_incapacitated_all":"Down all",
         "plst_bleedout_all":"Bleedout all",
         "plst_kill_all":"Kill all",
-        "plst_standard_all":"Reviev all"
+        "plst_standard_all":"Reviev all",
+		"plst_cheater_tag_all":"Mark all"
         
          
         

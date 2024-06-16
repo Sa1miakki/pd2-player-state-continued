@@ -8,6 +8,9 @@
         "plst_lang_3":"简体中文",
         "plst_anonymous_title":"自定义名称",
         "plst_anonymous_desc":"自定义你发送时的名称,发送时其他人看不到此名称\n 例如你想炸的人装了anticrash,那么他收到的信息是*这个名字*想要炸他",
+        "plst_anonymous_toggle_title":"启用自定义名称",
+        "plst_anonymous_toggle_desc":"关掉它你可以更快地改变别人状态，不用手动选名字了",
+
 
 
         "plst_host_main_title":"改变一名玩家的状态 (当前状态:主机)",
@@ -26,7 +29,9 @@
         "plst_incapacitated":"被踹",
         "plst_bleedout":"倒地",
         "plst_kill":"击杀",
-        "plst_conkill":"连续击杀(2秒一次)",
+        "plst_explode":"爆炸",
+        "plst_conkill":"连续爆炸(2秒一次)",
+        "plst_shake":"摇晃屏幕",
         "plst_standard":"恢复正常",
         "plst_custody":"进局",
         "plst_un_custody":"出局",
@@ -37,6 +42,7 @@
         "plst_crash":"闪退",
         "plst_con_crash":"每秒100条闪退(刷屏)",
         "plst_un_custody_me":"让我出局",
+		"plst_cheater_tag":"标记作弊者",
 		
 		"plst_tele_to_me_state":"让一名玩家传送",
         "plst_tele_to_me_desc":"选择让谁传送",
@@ -56,6 +62,7 @@
         "plst_bleedout_all":"全体倒下",
         "plst_kill_all":"全体击杀",
         "plst_standard_all":"全体恢复正常"
+		"plst_cheater_tag_all":"标记全体"
          
         
 

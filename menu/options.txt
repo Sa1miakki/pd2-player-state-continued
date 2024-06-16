@@ -18,13 +18,22 @@
 			],
 			"value" : "plst_lang_value"
 		},
-         {
-            "type": "input",
-            "id": "plst_anonymous_input",
-            "title": "plst_anonymous_title",
-            "description": "plst_anonymous_desc",
-            "callback": "plst_anonymous_callback",
-            "value": "plst_anonymous"
+                {
+                        "type": "input",
+                        "id": "plst_anonymous_input",
+                        "title": "plst_anonymous_title",
+                        "description": "plst_anonymous_desc",
+                        "callback": "plst_anonymous_callback",
+                        "value": "plst_anonymous"
+		},
+                {
+			"type" : "toggle",
+			"id" : "plst_anonymous_toggle",
+			"title" : "plst_anonymous_toggle_title",
+			"description" : "plst_anonymous_toggle_desc",
+			"callback" : "plst_anonymous_toggle_callback",
+			"value" : "anonymous_enabled"
 		}
+
 	]
 }

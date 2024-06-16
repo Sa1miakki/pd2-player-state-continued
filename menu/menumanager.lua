@@ -3,7 +3,8 @@ PlayerState.path = ModPath
 PlayerState.save_path = SavePath .. "plst.txt"
 PlayerState.settings = {
 	plst_lang_value = 1,
-	plst_anonymous = ""}
+	plst_anonymous = "",
+	anonymous_enabled = true}
 	
 function PlayerState:Save()
 	local file = io.open(self.save_path,"w+")
@@ -33,6 +34,12 @@ Hooks:Add("MenuManagerInitialize", "PlayerState_MenuManagerInitialize", function
 	
 	MenuCallbackHandler.plst_anonymous_callback = function(self,item)
 		PlayerState.settings.plst_anonymous = item:value()
+		PlayerState:Save()
+	end
+	
+	MenuCallbackHandler.plst_anonymous_toggle_callback = function(self,item) 
+		local value = item:value() == "on"
+		PlayerState.settings.anonymous_enabled = value 
 		PlayerState:Save()
 	end
 	
